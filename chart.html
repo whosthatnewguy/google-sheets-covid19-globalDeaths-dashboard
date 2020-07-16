@@ -1,0 +1,107 @@
+<html>
+  <head>
+ <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="design.css">
+    
+    <body>
+  <!-- day select event -->
+  <div>
+  <body>
+    <!-- NAVBAR -->
+  <nav id="navbar-example2" class="navbar navbar-light bg-light">
+  <a class="navbar-brand" href="">2020 Covid Deaths</a>
+  <ul class="nav nav-pills">
+    <li class="nav-item">
+      <a class="nav-link" href="#mdo">johnathantpringle@gmail.com</a>
+    </li>
+    <li class="nav-item dropdown">
+      <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Dropdown</a>
+      <div class="dropdown-menu">
+        <a class="dropdown-item" href="#one">In Progress</a>
+      </div>
+    </li>
+  </ul>
+</nav>
+
+<!-- day dropdown/event listener -->
+  <label>Days</label>
+    <select id="days">
+      <option selected>5</option>
+      <option>10</option>
+      <option>15</option>
+      <option>20</option>
+      <option>30</option>
+      <option>100</option>
+      <option>150</option>
+    </select>
+    <div id="number_format_chart">
+  </div>
+    <div class="row justify-content-md-center" id="chart_div" style="width: 1200px; height: 600px;"></div>
+     <script type="text/javascript">
+      google.charts.load("current", {'packages':['bar']});
+      google.charts.setOnLoadCallback(getData);
+      
+      var covidData;
+     
+      function getData(){
+      // run script from code.gs
+      google.script.run.withSuccessHandler(setDataForChart).getCovidData();
+      }   
+      
+      // using data globally
+      function setDataForChart(dataReturned){
+      covidData = dataReturned.slice();
+      drawChart(covidData, 5);
+      
+      }      
+      function reloadChartForDays(){
+      var days = document.getElementById('days').value;
+      var intDays = parseInt(days);
+      drawChart(covidData, intDays);
+      }     
+      
+      function drawChart(dataReturned, days){
+      // building data
+      
+      var dataFilter = dataReturned.slice(0 - days);
+      
+      //shift headers onto data
+      dataFilter.unshift(["Total deaths + deaths over the past " + days + " days","Total Deaths", "Deaths Per Day"]);    
+        var data = google.visualization.arrayToDataTable(dataFilter);
+        var options = {
+        chart: {
+        title: 'Global 2020 Coronavirus Deaths',
+        subtitle: 'Total Deaths & Deaths Per Day',
+        },
+        series: {
+            0: { axis: 'people' },
+            1: { axis: 'people' }
+          },
+         axes: {
+            y: {
+              people: {label: 'Number of People'}, // Left y-axis.
+              brightness: {side: 'right', label: 'apparent magnitude'} // right y-axis
+            }
+            },
+            //legend: { position: 'top', maxLines: 3 },
+            isStacked: true,
+            bar: { groupWidth: "100%" }
+        };
+        var chart = new google.charts.Bar(document.getElementById('chart_div'));
+        chart.draw(data, google.charts.Bar.convertOptions(options));   
+      }
+      
+      
+      
+      // event listener to get day value and run function
+      document.getElementById('days').addEventListener("change",reloadChartForDays);
+      
+    </script>
+  </head>
+   <script src="https://code.jquery.com/jquery-1.12.4.js" integrity="sha256-Qw82+bXyGq6MydymqBxNPYTaUXXq7c8v3CwiYwLLNXU=" crossorigin="anonymous"></script>
+ <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+  </body>
+</html>
+
+
